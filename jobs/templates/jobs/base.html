@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}McCann Job Costing App{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            min-height: 100vh;
+        }
+
+        /* NAV */
+        nav {
+            background: #0f172a;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 58px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            background: #f97316;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-title {
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: #1e293b;
+            color: white;
+        }
+
+        /* MAIN */
+        main {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 28px 20px 60px;
+        }
+
+        /* MESSAGES */
+        .messages { margin-bottom: 20px; }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .message.success {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #166534;
+        }
+
+        .message.error {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        /* CARDS */
+        .card {
+            background: white;
+            border: 1px solid #e8ecf0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .card-header {
+            padding: 11px 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e8ecf0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-accent {
+            width: 3px;
+            height: 16px;
+            border-radius: 2px;
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        .card-body { padding: 16px; }
+
+        /* FORM ELEMENTS */
+        label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1e293b;
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="time"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #94a3b8;
+        }
+
+        textarea { resize: vertical; line-height: 1.5; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-group { margin-bottom: 14px; }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #f97316;
+            color: white;
+            width: 100%;
+            justify-content: center;
+            padding: 13px;
+            font-size: 15px;
+            border-radius: 10px;
+        }
+
+        .btn-primary:hover { background: #ea6c0a; }
+
+        .btn-secondary {
+            background: white;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            font-size: 13px;
+            padding: 7px 14px;
+        }
+
+        .btn-secondary:hover { background: #f8fafc; }
+
+        .btn-danger {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 9px;
+            border: 1.5px dashed #d1d5db;
+            border-radius: 8px;
+            background: none;
+            cursor: pointer;
+            font-size: 13px;
+            color: #64748b;
+            font-family: inherit;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover { background: #f8fafc; border-color: #94a3b8; }
+
+        /* PILLS */
+        .pill-green {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #15803d;
+            white-space: nowrap;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pill-blue {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1d4ed8;
+        }
+
+        .pill-orange {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #c2410c;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ROW ITEMS */
+        .item-row {
+            display: flex;
+            align-items: center;
+            padding: 9px 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e8ecf0;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .item-row-label {
+            flex: 1;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .item-row-sub {
+            font-size: 11px;
+            color: #94a3b8;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* COST SUMMARY BAR */
+        .cost-bar {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .cost-bar-label {
+            font-size: 10px;
+            color: #475569;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .cost-bar-total {
+            font-size: 26px;
+            font-weight: 700;
+            color: #f0fdf4;
+            font-family: 'Courier New', monospace;
+            margin-top: 2px;
+        }
+
+        .cost-bar-breakdown {
+            text-align: right;
+            font-size: 12px;
+            color: #64748b;
+            font-family: 'Courier New', monospace;
+            line-height: 1.9;
+        }
+
+        /* PAGE HEADER */
+        .page-header {
+            margin-bottom: 22px;
+        }
+
+        .page-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .page-header p {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* TABLE */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 10px 14px;
+            background: #f8fafc;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid #e8ecf0;
+        }
+
+        .data-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        .data-table tr:last-child td { border-bottom: none; }
+
+        .data-table tr:hover td { background: #fafbfc; }
+
+        .data-table a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .data-table a:hover { text-decoration: underline; }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            main { padding: 16px 12px 60px; }
+            .cost-bar-total { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="nav-brand">
+        <span class="nav-logo">McCann</span>
+        <span class="nav-title">Job Costing</span>
+    </a>
+    <div class="nav-links">
+        <a href="/" class="{% block nav_operative %}{% endblock %}">Operative</a>
+        <a href="/dashboard/" class="{% block nav_qs %}{% endblock %}">QS Dashboard</a>
+    </div>
+</nav>
+
+<main>
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

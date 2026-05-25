@@ -1,0 +1,129 @@
+{% extends 'jobs/base.html' %}
+{% block title %}{{ job.works_order_ref }} - McCann{% endblock %}
+{% block nav_qs %}active{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:16px;">
+    <a href="/dashboard/" class="btn btn-secondary" style="font-size:13px;">← Back to dashboard</a>
+</div>
+
+<div class="page-header">
+    <h1>{{ job.works_order_ref }}</h1>
+    <p>Submitted by {{ job.operative_name }} on {{ job.submitted_at|date:"d M Y \a\t H:i" }}</p>
+</div>
+
+<!-- Cost Summary Bar -->
+<div class="cost-bar">
+    <div>
+        <div class="cost-bar-label">Total Job Cost</div>
+        <div class="cost-bar-total">£{{ job.total_cost }}</div>
+    </div>
+    <div class="cost-bar-breakdown">
+        <div>Labour &nbsp;£{{ job.labour_cost }}</div>
+        <div>Plant &nbsp;&nbsp;£{{ job.plant_cost }}</div>
+    </div>
+</div>
+
+<!-- Time on Site -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-accent" style="background:#f97316"></div>
+        <span class="card-title">Time on Site</span>
+    </div>
+    <div class="card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;text-align:center;">
+            <div>
+                <div style="font-size:11px;color:#94a3b8;margin-bottom:4px;">Arrived</div>
+                <div style="font-size:18px;font-weight:700;font-family:'Courier New',monospace;color:#0f172a;">{{ job.arrived_time|time:"H:i" }}</div>
+            </div>
+            <div>
+                <div style="font-size:11px;color:#94a3b8;margin-bottom:4px;">Departed</div>
+                <div style="font-size:18px;font-weight:700;font-family:'Courier New',monospace;color:#0f172a;">{{ job.departed_time|time:"H:i" }}</div>
+            </div>
+            <div>
+                <div style="font-size:11px;color:#94a3b8;margin-bottom:4px;">Total hours</div>
+                <div style="font-size:18px;font-weight:700;font-family:'Courier New',monospace;color:#c2410c;">{{ job.hours_on_site }}h</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Team -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-accent" style="background:#8b5cf6"></div>
+        <span class="card-title">Team on Site ({{ team.count }} member{{ team.count|pluralize }})</span>
+    </div>
+    <div class="card-body">
+        {% if team %}
+            {% for member in team %}
+            <div class="item-row">
+                <div style="width:32px;height:32px;border-radius:50%;background:#eef2ff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#3730a3;">
+                    {{ member.name|slice:":2"|upper }}
+                </div>
+                <span class="item-row-label">{{ member.name }}</span>
+                <span style="font-size:12px;color:#94a3b8;font-family:'Courier New',monospace;">£{{ job.hours_on_site }} h × £28/h</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="font-size:13px;color:#94a3b8;">No team members recorded.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Plant & Tools -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-accent" style="background:#10b981"></div>
+        <span class="card-title">Plant &amp; Tools Used</span>
+    </div>
+    <div class="card-body">
+        {% if plant %}
+            {% for item in plant %}
+            <div class="item-row">
+                <span class="item-row-label">{{ item.display_name }}</span>
+                <span class="pill-green">£{{ item.cost }}</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="font-size:13px;color:#94a3b8;">No plant or tools recorded.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Vehicles -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-accent" style="background:#0ea5e9"></div>
+        <span class="card-title">Vehicles on Site</span>
+    </div>
+    <div class="card-body">
+        {% if vehicles %}
+            {% for v in vehicles %}
+            <div class="item-row">
+                <div style="flex:1">
+                    <div style="font-size:13px;font-weight:600;color:#334155;">{{ v.get_vehicle_type_display }}</div>
+                    <div class="item-row-sub">{{ v.registration }} · arrived {{ v.arrived_time|time:"H:i" }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="font-size:13px;color:#94a3b8;">No vehicles recorded.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Notes -->
+{% if job.notes %}
+<div class="card">
+    <div class="card-header">
+        <div class="card-accent" style="background:#f43f5e"></div>
+        <span class="card-title">Notes</span>
+    </div>
+    <div class="card-body">
+        <p style="font-size:14px;color:#334155;line-height:1.6;">{{ job.notes }}</p>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

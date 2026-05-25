@@ -1,0 +1,64 @@
+{% extends 'jobs/base.html' %}
+{% block title %}QS Dashboard - McCann{% endblock %}
+{% block nav_qs %}active{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>QS Dashboard</h1>
+    <p>All submitted job records with calculated costs</p>
+</div>
+
+<!-- Summary cards -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:22px;">
+    <div style="background:#f8fafc;border-radius:10px;padding:14px 16px;">
+        <div style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Total jobs</div>
+        <div style="font-size:26px;font-weight:700;color:#0f172a;font-family:'Courier New',monospace;margin-top:4px;">{{ jobs.count }}</div>
+    </div>
+    <div style="background:#f8fafc;border-radius:10px;padding:14px 16px;">
+        <div style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Total cost</div>
+        <div style="font-size:26px;font-weight:700;color:#15803d;font-family:'Courier New',monospace;margin-top:4px;">£{{ total_all_jobs }}</div>
+    </div>
+</div>
+
+<!-- Jobs table -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-accent" style="background:#6366f1"></div>
+        <span class="card-title">All Submitted Jobs</span>
+    </div>
+    {% if jobs %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Works order ref</th>
+                <th>Operative</th>
+                <th>Date submitted</th>
+                <th>Time on site</th>
+                <th>Team size</th>
+                <th>Total cost</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+            <tr>
+                <td><strong>{{ job.works_order_ref }}</strong></td>
+                <td>{{ job.operative_name }}</td>
+                <td style="font-size:12px;color:#94a3b8;">{{ job.submitted_at|date:"d M Y, H:i" }}</td>
+                <td><span class="pill-orange">{{ job.hours_on_site }}h</span></td>
+                <td>{{ job.teammember_set.count }} member{{ job.teammember_set.count|pluralize }}</td>
+                <td><span class="pill-green">£{{ job.total_cost }}</span></td>
+                <td><a href="/job/{{ job.id }}/" class="btn btn-secondary" style="font-size:12px;padding:5px 12px;">View →</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="padding:40px;text-align:center;color:#94a3b8;">
+        <div style="font-size:32px;margin-bottom:12px;">📋</div>
+        <p style="font-size:14px;">No jobs submitted yet.</p>
+        <a href="/" class="btn btn-secondary" style="margin-top:12px;display:inline-flex;">Submit a job →</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
