@@ -1,0 +1,1 @@
+web: gunicorn mccann_project.wsgi
