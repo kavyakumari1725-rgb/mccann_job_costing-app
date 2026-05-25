@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from datetime import time
 from .models import Job, PlantItem, TeamMember, Vehicle
 
 
@@ -9,8 +10,8 @@ class JobModelTest(TestCase):
         self.job = Job.objects.create(
             works_order_ref='WO-TEST-001',
             operative_name='Test Operative',
-            arrived_time='08:00',
-            departed_time='12:00',
+            arrived_time=time(8, 0),
+            departed_time=time(12, 0),
             notes='Test job'
         )
 
